@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LNC Staking Rewards</title>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 640px; margin: 2rem auto; padding: 0 1rem; }
+  .banner { background: #fff3cd; border: 1px solid #e6c200; padding: 1rem; border-radius: 8px; }
+  .card { border: 1px solid #ddd; border-radius: 8px; padding: 1rem; margin-top: 1rem; }
+  button { padding: .5rem 1rem; margin-right: .5rem; }
+  input { padding: .5rem; width: 12rem; }
+  #log { white-space: pre-wrap; font-size: .85rem; }
+</style>
+</head>
+<body>
+<h1>LNC Staking Rewards</h1>
+<div class="banner" id="deploy-banner">
+  ⚠️ <strong>NOT DEPLOYED.</strong> This app skeleton is wired to a placeholder
+  contract address. It shows no balances and sends no transactions until a real
+  contract address is set in <code>app.js</code>.
+</div>
+
+<div class="card">
+  <button id="connect">Connect wallet (Keplr)</button>
+  <span id="wallet">Not connected</span>
+</div>
+
+<div class="card">
+  <h2>Your position</h2>
+  <p>Staked: <span id="staked">—</span> LNC</p>
+  <p>Pending rewards: <span id="pending">—</span> LNC</p>
+  <button id="refresh">Refresh</button>
+</div>
+
+<div class="card">
+  <h2>Stake LNC</h2>
+  <input id="stake-amount" type="number" min="0" step="any" placeholder="Amount in LNC">
+  <button id="stake">Stake</button>
+</div>
+
+<div class="card">
+  <h2>Unstake</h2>
+  <input id="unstake-amount" type="number" min="0" step="any" placeholder="Amount in LNC">
+  <button id="unstake">Unstake</button>
+</div>
+
+<div class="card">
+  <h2>Rewards</h2>
+  <button id="claim">Claim all</button>
+</div>
+
+<p id="log"></p>
+<script type="module" src="app.js"></script>
+</body>
+</html>

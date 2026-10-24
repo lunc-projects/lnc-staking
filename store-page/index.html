@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LNC Staking — Store Code (one-click)</title>
+<style>
+  body { font-family: system-ui, -apple-system, sans-serif; margin: 0; padding: 16px; background: #0f1220; color: #eef0ff; line-height: 1.5; }
+  main { max-width: 640px; margin: 0 auto; }
+  h1 { font-size: 1.4rem; margin-bottom: 0.25rem; }
+  .sub { color: #aab0d6; }
+  .card { background: #1a1e38; border: 1px solid #2c3166; border-radius: 12px; padding: 16px; margin: 16px 0; }
+  button { display: block; width: 100%; padding: 14px; font-size: 1.05rem; font-weight: 700; border: 0; border-radius: 10px; cursor: pointer; margin: 8px 0; }
+  button:disabled { opacity: 0.45; cursor: not-allowed; }
+  .primary { background: #6c8cff; color: #fff; }
+  .danger { background: #e5484d; color: #fff; }
+  code, .mono { font-family: ui-monospace, monospace; word-break: break-all; font-size: 0.85rem; }
+  .ok { color: #4ade80; font-weight: 700; }
+  .bad { color: #f87171; font-weight: 700; }
+  .warn { background: #3a2a08; border: 1px solid #8a6d1a; border-radius: 10px; padding: 12px; }
+  a { color: #8ab4ff; }
+  .step { font-weight: 700; margin-bottom: 4px; }
+  #status { white-space: pre-wrap; }
+</style>
+</head>
+<body>
+<main>
+  <h1>📦 Store the LNC staking code on-chain</h1>
+  <p class="sub">One-click StoreCode for the LNC staking rewards contract on Terra Classic (columbus-5).
+  This only <b>stores the code</b> — it does not instantiate a contract, set a rate, or move any funds.
+  Storing now matters because governance proposal 12234 closes <b>Mon Oct 26, 2026, 6:52 PM ET</b>:
+  if it passes, future code uploads need a governance proposal. Instantiation stays open to everybody afterwards.</p>
+
+  <div class="warn">
+    ⚠️ <b>Only the designated wallet may upload:</b>
+    <span class="mono">terra17ntyhh0242y2tjmq37zjgl0chysu84s9hkph69</span><br>
+    The page refuses to upload from any other connected wallet. No seed phrase or private key is ever
+    asked for — you approve the transaction in your own wallet.
+  </div>
+
+  <div class="card">
+    <div class="step">Step 1 — Connect wallet</div>
+    <button id="connectBtn" class="primary">Connect wallet (Keplr)</button>
+    <div id="walletInfo">Not connected.</div>
+  </div>
+
+  <div class="card">
+    <div class="step">Step 2 — Verify the code file</div>
+    <p class="sub">The page downloads <span class="mono">lnc_staking.wasm</span> (served next to this page),
+    hashes it in your browser, and compares it to the expected checksum before anything is uploaded.</p>
+    <div id="fileInfo">Checking file…</div>
+  </div>
+
+  <div class="card">
+    <div class="step">Step 3 — Upload (StoreCode)</div>
+    <p class="sub">Sends one <span class="mono">MsgStoreCode</span> with instantiate permission set explicitly to
+    <b>EVERYBODY</b>, so anyone can instantiate this code later. Nothing is sent until you tap Upload
+    <b>and</b> approve in your wallet.</p>
+    <button id="uploadBtn" class="danger" disabled>Upload code to Terra Classic</button>
+    <div id="status"></div>
+  </div>
+
+  <div class="card" id="resultCard" style="display:none">
+    <div class="step">✅ Stored on-chain</div>
+    <div id="result"></div>
+  </div>
+
+  <p class="sub">Expected wasm sha256: <span class="mono">9993d22a5fb506945f1658809fcce040a0e318d40c455c1423ca01e53117b4ec</span><br>
+  Served binary: <span class="mono">lnc_staking.wasm</span> (389,011 bytes, local release build — not the CosmWasm optimizer output).</p>
+</main>
+<script type="module" src="app.js"></script>
+</body>
+</html>

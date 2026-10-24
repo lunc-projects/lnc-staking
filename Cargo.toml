@@ -1,0 +1,3 @@
+[workspace]
+members = ["contracts/lnc-staking"]
+resolver = "2"

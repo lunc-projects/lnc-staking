@@ -1,0 +1,36 @@
+[package]
+name = "lnc-staking"
+version = "0.1.0"
+edition = "2021"
+description = "LNC CW20 token-staking rewards - Terra Classic. Stake LNC, earn LNC rewards. Single wallet admin, migrate rejected by design (Garuda lesson)."
+license = "MIT"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[features]
+backtraces = ["cosmwasm-std/backtraces"]
+library = []
+
+[dependencies]
+cosmwasm-schema = "1.5.11"
+cosmwasm-std = "1.5.11"
+cw-storage-plus = "1.2.0"
+cw2 = "1.1.2"
+schemars = "0.8.16"
+serde = { version = "1.0", default-features = false, features = ["derive"] }
+thiserror = "1.0"
+
+[dev-dependencies]
+cosmwasm-std = { version = "1.5.11", features = ["stargate"] }
+
+[profile.release]
+opt-level = 3
+debug = false
+rpath = false
+lto = true
+debug-assertions = false
+codegen-units = 1
+panic = "abort"
+incremental = false
+overflow-checks = true
