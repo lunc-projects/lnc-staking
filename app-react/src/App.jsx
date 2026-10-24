@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useChain } from '@cosmos-kit/react';
 import { CHAIN_NAME, CONTRACT_ADDRESS, FINDER, LNC, toRaw, toWhole, shortAddr } from './config.js';
-import { queryConfig, queryPosition, queryRewards, stakeLnc, unstake, claimAll, adminSetRewardRate, adminFundPool, adminAddReward } from './lib/stakingClient.js';
+import { queryConfig, queryPosition, queryRewards, queryTokenBalance, stakeLnc, unstake, claimAll, adminSetRewardRate, adminFundPool, adminAddReward } from './lib/stakingClient.js';
 
 const label = (addr) => (addr === LNC.address ? 'LNC' : shortAddr(addr));
 const addrLink = (addr) => (
@@ -16,6 +16,7 @@ export default function App() {
   const address = chain.address || '';
 
   const [staked, setStaked] = useState(null);
+  const [walletBalance, setWalletBalance] = useState(null);
   const [pending, setPending] = useState([]);
   const [rewards, setRewards] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -35,6 +36,7 @@ export default function App() {
     try {
       const pos = await queryPosition(address);
       setStaked(pos.amount);
+      setWalletBalance(await queryTokenBalance(LNC.address, address));
       setPending((pos.pending || []).filter((p) => Number(p.amount) > 0));
       const rw = await queryRewards();
       setRewards(rw);
@@ -51,7 +53,7 @@ export default function App() {
   // WalletConnect session, where Cosmos Kit reconnects on load).
   useEffect(() => {
     if (connected) refresh();
-    else { setStaked(null); setPending([]); setRewards([]); setIsAdmin(false); }
+    else { setStaked(null); setWalletBalance(null); setPending([]); setRewards([]); setIsAdmin(false); }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [connected]);
 
@@ -96,6 +98,7 @@ export default function App() {
       <div className="card">
         <h2>🍬 Your position</h2>
         <p>Staked: <span className="big">{connected ? (staked === null ? '…' : `${toWhole(staked)}`) : '—'}</span> LNC</p>
+        <p>Wallet balance: <span className="big">{connected ? (walletBalance === null ? '…' : `${toWhole(walletBalance)}`) : '—'}</span> LNC <span className="muted">(available to stake)</span></p>
         <p>Pending rewards:</p>
         <ul>
           {connected ? (
@@ -110,6 +113,7 @@ export default function App() {
       <div className="card">
         <h2>🍭 Stake LNC</h2>
         <input type="number" min="0" step="any" placeholder="Amount in LNC" value={stakeAmount} onChange={(e) => setStakeAmount(e.target.value)} />
+        <p className="muted">Available in your wallet: {connected ? (walletBalance === null ? '…' : `${toWhole(walletBalance)} LNC`) : '—'}</p>
         <button className="pink" onClick={() => {
           if (!stakeAmount) { pushLog('Enter a stake amount.'); return; }
           run('Staked', (c) => stakeLnc(c, address, toRaw(stakeAmount)));

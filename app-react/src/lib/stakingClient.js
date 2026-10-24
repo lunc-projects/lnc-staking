@@ -24,6 +24,12 @@ export async function queryConfig() {
 export async function queryPosition(owner) {
   return lcdSmart(CONTRACT_ADDRESS, { position: { owner } });
 }
+// CW20 balance of any token for a wallet — used to show how much LNC the
+// connected wallet holds and can stake.
+export async function queryTokenBalance(token, owner) {
+  const out = await lcdSmart(token, { balance: { address: owner } });
+  return out?.balance ?? '0';
+}
 export async function queryRewards() {
   const out = await lcdSmart(CONTRACT_ADDRESS, { rewards: {} });
   return Array.isArray(out) ? out : out?.rewards || [];
