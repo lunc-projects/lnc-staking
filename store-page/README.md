@@ -26,15 +26,40 @@ later — instantiation stays open to everybody regardless.
 ## Files (keep together)
 
 - `index.html` — page + styling
-- `app.js` — logic (CosmJS 0.32.4 via esm.sh CDN)
+- `app.bundle.js` — logic, self-contained: CosmJS 0.32.4 bundled locally with esbuild
+  (see "Build step" below). **No CDN JavaScript is loaded at runtime.**
 - `lnc_staking.wasm` — the code to store (389,011 bytes; **local release build, NOT the
   CosmWasm optimizer output** — see the caveat below)
+
+## Build step (self-contained bundle — added 2026-10-24)
+
+The first version of this page loaded CosmJS from esm.sh via `<script type="module">`
+imports. That module graph failed to execute in mobile wallet browsers (page rendered,
+but no button handler ever fired). The fix: bundle locally so the page loads zero
+third-party JavaScript at runtime.
+
+- Source: `../build/app.entry.js` (same logic as the original `app.js`, imports
+  rewritten to the npm packages `@cosmjs/cosmwasm-stargate@0.32.4` and
+  `@cosmjs/stargate@0.32.4`).
+- Deps live in `../build/` (`npm install` there; `build/node_modules/` is never
+  committed). Build with esbuild (a `crypto` shim is aliased in because two
+  `@cosmjs/crypto` fallbacks `require("crypto")` — both are guarded and never run
+  in browsers, which use Web Crypto first):
+  ```
+  cd ../build && npm install
+  ../build/node_modules/.bin/esbuild app.entry.js --bundle --format=iife \
+    --platform=browser --target=es2020 --minify \
+    --alias:crypto=./crypto-shim.js --outfile=../store-page/app.bundle.js
+  ```
+- `index.html` loads `app.bundle.js` as a plain deferred script. To change page logic,
+  edit `../build/app.entry.js` and re-run the bundle command — never hand-edit the
+  bundle.
 
 ## Hosting
 
 Any static host works (GitHub Pages, Vercel, any plain file server). Serve all three files
 from the same directory over HTTPS — wallets and `crypto.subtle` require a secure context.
-No server-side code, no build step, no secrets on the server.
+No server-side code, no secrets on the server.
 
 ## How the owner uses it
 
@@ -48,25 +73,25 @@ No server-side code, no build step, no secrets on the server.
 
 - **NOT live-tested with a real wallet.** The flow is standard CosmJS
   (`SigningCosmWasmClient.connectWithSigner` → `upload(..., "auto", "", { permission: 3 })`),
-  and the CDN imports + the upload signature were verified against the published 0.32.4
-  bundle — but no real signing, broadcast, or StoreCode transaction was executed from this
+  and the bundle passed a syntax check with the upload signature from the published 0.32.4
+  package — but no real signing, broadcast, or StoreCode transaction was executed from this
   page in testing. The first real use IS the live run; do it with attention, not on autopilot.
 - **Keplr is the supported wallet.** Station support is best-effort only: the code attempts
   `window.station.getOfflineSigner` (or `window.station.keplr`) if present, but Station's
   injected API varies by version and was **not verified**. If Station does not work, use
   desktop Keplr. Do not claim Station works until someone tests it.
-- **CDN dependency.** The page loads CosmJS from esm.sh at runtime. If esm.sh is unreachable
-  or the pinned 0.32.4 files move, the page fails to load — there is no bundled fallback.
-  (Pinned versions verified resolving 2026-10-24: `@cosmjs/cosmwasm-stargate@0.32.4`,
-  `@cosmjs/stargate@0.32.4`, `@cosmjs/proto-signing@0.32.4`.)
+- **Self-contained — no CDN JavaScript.** As of 2026-10-24 the page bundles CosmJS
+  locally (see "Build step" above) and loads no third-party script at runtime, after
+  the esm.sh module version failed to execute in mobile wallet browsers. The only
+  remaining external dependencies are the Terra Classic RPC/LCD endpoints below.
 - **Gas price assumption.** The signing client uses `0.15uluna`. If the network rejects the
-  tx on fees, that value needs adjusting in `app.js` — it is the one tunable that was not
+  tx on fees, that value needs adjusting in `../build/app.entry.js` (then re-bundle) — it is the one tunable that was not
   verified against live fee conditions.
 - **Local release build, not optimizer output.** The served wasm is the local
   `cargo build --release` binary (sha256 above). It instantiates the same code as an
   optimizer build, but the deterministic production standard is the CosmWasm optimizer;
   if the owner later wants a reproducible binary, re-run the optimizer and update both the
-  served file and the expected sha256 in `index.html`/`app.js` together.
+  served file and the expected sha256 in `index.html`/`../build/app.entry.js` together.
 - **RPC/LCD dependency.** Uses `https://terra-classic-rpc.publicnode.com` (signing) and
   `https://terra-classic-lcd.publicnode.com` (code-info lookup). If either is down, the
   page cannot complete; the design does not fall back to a second endpoint.
