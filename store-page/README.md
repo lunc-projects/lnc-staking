@@ -12,6 +12,11 @@ later — instantiation stays open to everybody regardless.
 
 - DOES: send exactly one `MsgStoreCode` from the designated wallet, with instantiate
   permission set explicitly to **EVERYBODY**.
+- DOES (Step 4, added 2026-10-24): instantiate code **11753** with admin = chain-level
+  admin = the designated wallet and staking token = LNC, label "LNC staking rewards".
+  Shows the resulting contract address in plain copyable text plus the tx hash
+  (Finder link). Nothing is sent until the user taps Instantiate AND approves in
+  their wallet. Step 4 is locked to the designated wallet exactly like the upload.
 - DOES NOT: instantiate a contract, set a reward rate, fund anything, or move staked funds.
 - The page refuses to upload from any wallet other than the designated sender
   (`terra17ntyhh0242y2tjmq37zjgl0chysu84s9hkph69`).

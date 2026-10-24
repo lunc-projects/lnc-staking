@@ -65,6 +65,20 @@
     <div id="result"></div>
   </div>
 
+  <div class="card">
+    <div class="step">Step 4 — Create the staking contract (instantiate)</div>
+    <p class="sub">Creates the LNC staking contract from code <b>11753</b> (stored earlier from this page).
+    Admin and chain-level admin are both your wallet, and the staking token is LNC.
+    Nothing is sent until you tap Instantiate <b>and</b> approve in your wallet.</p>
+    <button id="instantiateBtn" class="primary" disabled>Instantiate contract</button>
+    <div id="instantiateStatus"></div>
+  </div>
+
+  <div class="card" id="instantiateResultCard" style="display:none">
+    <div class="step">✅ Contract created</div>
+    <div id="instantiateResult"></div>
+  </div>
+
   <p class="sub">Expected wasm sha256: <span class="mono">9993d22a5fb506945f1658809fcce040a0e318d40c455c1423ca01e53117b4ec</span><br>
   Served binary: <span class="mono">lnc_staking.wasm</span> (389,011 bytes, local release build — not the CosmWasm optimizer output).</p>
 </main>

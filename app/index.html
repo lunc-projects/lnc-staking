@@ -3,54 +3,140 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>LNC Staking Rewards</title>
+<title>🍭 LNC Staking on Luna Classic</title>
 <style>
-  body { font-family: system-ui, sans-serif; max-width: 640px; margin: 2rem auto; padding: 0 1rem; }
-  .banner { background: #fff3cd; border: 1px solid #e6c200; padding: 1rem; border-radius: 8px; }
-  .card { border: 1px solid #ddd; border-radius: 8px; padding: 1rem; margin-top: 1rem; }
-  button { padding: .5rem 1rem; margin-right: .5rem; }
-  input { padding: .5rem; width: 12rem; }
-  #log { white-space: pre-wrap; font-size: .85rem; }
+  * { box-sizing: border-box; }
+  body {
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    margin: 0; padding: 0 14px 40px;
+    background: linear-gradient(180deg, #fff0f6 0%, #fff9ec 45%, #eafcff 100%);
+    color: #3a2b3d; line-height: 1.5;
+  }
+  main { max-width: 560px; margin: 0 auto; }
+  .hero { text-align: center; padding: 22px 8px 6px; }
+  .hero img {
+    width: 148px; height: 148px; object-fit: cover;
+    border-radius: 50%;
+    border: 5px solid #fff;
+    box-shadow: 0 6px 18px rgba(255, 111, 165, 0.35);
+  }
+  h1 { font-size: 1.65rem; margin: 12px 0 2px; color: #d63384; }
+  .tagline { color: #7a6a80; margin: 0 0 10px; font-size: 1rem; }
+  .banner {
+    background: #fff3cd; border: 2px dashed #e6c200; border-radius: 18px;
+    padding: 14px 16px; margin: 14px 0; font-size: 0.98rem;
+  }
+  .card {
+    background: #ffffff; border-radius: 22px; padding: 16px 18px; margin: 14px 0;
+    box-shadow: 0 4px 14px rgba(214, 51, 132, 0.10);
+    border: 1px solid #ffe3ef;
+  }
+  .card h2 { margin: 0 0 10px; font-size: 1.15rem; color: #a61e6b; }
+  .card h3 { margin: 14px 0 6px; font-size: 1rem; color: #a61e6b; }
+  button {
+    display: block; width: 100%; padding: 14px; margin: 8px 0;
+    font-size: 1.05rem; font-weight: 700; border: 0; border-radius: 16px; cursor: pointer;
+  }
+  button:disabled { opacity: 0.45; cursor: not-allowed; }
+  .pink { background: #ff6fa5; color: #fff; }
+  .mint { background: #2ec4a6; color: #fff; }
+  .purple { background: #9b7ede; color: #fff; }
+  input, select {
+    display: block; width: 100%; padding: 13px; margin: 8px 0;
+    font-size: 1rem; border: 2px solid #ffd1e3; border-radius: 14px; background: #fffafa;
+  }
+  .big { font-size: 1.3rem; font-weight: 800; color: #d63384; }
+  .muted { color: #7a6a80; font-size: 0.92rem; }
+  .note { background: #f3f0ff; border-radius: 12px; padding: 10px 12px; font-size: 0.9rem; margin: 8px 0; }
+  code, .mono { font-family: ui-monospace, monospace; word-break: break-all; font-size: 0.85rem; }
+  a { color: #c2187a; }
+  #log { white-space: pre-wrap; font-size: 0.85rem; background: #fff; border-radius: 14px; padding: 10px 12px; }
+  #adminCard { display: none; border-color: #c9b8ff; }
+  ul { padding-left: 18px; }
+  li { margin: 6px 0; }
 </style>
 </head>
 <body>
-<h1>LNC Staking Rewards</h1>
-<div class="banner" id="deploy-banner">
-  ⚠️ <strong>NOT DEPLOYED.</strong> This app skeleton is wired to a placeholder
-  contract address. It shows no balances and sends no transactions until a real
-  contract address is set in <code>app.js</code>.
-</div>
+<main>
+  <div class="hero">
+    <img src="logo.jpg" alt="LNC candy logo">
+    <h1>🍭 LNC Staking</h1>
+    <p class="tagline">Stake LNC on Luna Classic. Sweet and simple. 🍬</p>
+  </div>
 
-<div class="card">
-  <button id="connect">Connect wallet (Keplr)</button>
-  <span id="wallet">Not connected</span>
-</div>
+  <div class="banner" id="deploy-banner">
+    🍬 <b>Not live yet</b> — the staking contract hasn't been created, so this app
+    shows no balances and can't send anything yet. Check back once the owner wires
+    in the contract address.
+  </div>
 
-<div class="card">
-  <h2>Your position</h2>
-  <p>Staked: <span id="staked">—</span> LNC</p>
-  <p>Pending rewards: <span id="pending">—</span> LNC</p>
-  <button id="refresh">Refresh</button>
-</div>
+  <div class="card">
+    <button id="connect" class="pink">🍭 Connect wallet</button>
+    <span id="wallet" class="muted">Not connected</span>
+  </div>
 
-<div class="card">
-  <h2>Stake LNC</h2>
-  <input id="stake-amount" type="number" min="0" step="any" placeholder="Amount in LNC">
-  <button id="stake">Stake</button>
-</div>
+  <div class="card">
+    <h2>🍬 Your position</h2>
+    <p>Staked: <span id="staked" class="big">—</span> LNC</p>
+    <p>Pending rewards:</p>
+    <ul id="pendingList"><li class="muted">Connect your wallet to see your rewards.</li></ul>
+    <button id="refresh" class="mint">🔄 Refresh</button>
+  </div>
 
-<div class="card">
-  <h2>Unstake</h2>
-  <input id="unstake-amount" type="number" min="0" step="any" placeholder="Amount in LNC">
-  <button id="unstake">Unstake</button>
-</div>
+  <div class="card">
+    <h2>🍭 Stake LNC</h2>
+    <input id="stake-amount" type="number" min="0" step="any" placeholder="Amount in LNC">
+    <button id="stake" class="pink">Stake my LNC 🍬</button>
+  </div>
 
-<div class="card">
-  <h2>Rewards</h2>
-  <button id="claim">Claim all</button>
-</div>
+  <div class="card">
+    <h2>↩️ Unstake</h2>
+    <input id="unstake-amount" type="number" min="0" step="any" placeholder="Amount in LNC">
+    <button id="unstake" class="purple">Unstake</button>
+    <p class="muted">Unstaking never blocks — your staked LNC always comes back, and rewards you've already earned stay claimable.</p>
+  </div>
 
-<p id="log"></p>
-<script type="module" src="app.js"></script>
+  <div class="card">
+    <h2>🎁 Rewards</h2>
+    <button id="claim" class="mint">Claim all rewards 🎉</button>
+    <h3>Reward tokens</h3>
+    <ul id="rewardsList"><li class="muted">Connect your wallet to see the rewards on offer.</li></ul>
+  </div>
+
+  <div class="card" id="adminCard">
+    <h2>🍬 Owner panel — add rewards</h2>
+    <p class="muted">Only the contract admin sees this panel.</p>
+
+    <h3>1 · Set reward rate</h3>
+    <label class="muted" for="rate-token">Reward token</label>
+    <select id="rate-token"></select>
+    <label class="muted" for="rate-value">Rate — raw units per 1 whole staked token per day</label>
+    <input id="rate-value" type="number" min="0" step="any" placeholder="e.g. 1000000">
+    <div class="note">
+      What the number means: LNC has 6 decimals, so 1,000,000 raw units = 1 whole LNC.
+      A rate of 1,000,000 means each staked LNC earns 1 LNC per day. A rate of 0 means
+      that reward is off. Rewards only ever pay out of the funded pool — never more than what's in it.
+    </div>
+    <button id="set-rate" class="pink">Set rate</button>
+
+    <h3>2 · Fund the pool</h3>
+    <label class="muted" for="fund-token">Reward token</label>
+    <select id="fund-token"></select>
+    <label class="muted" for="fund-amount">Amount</label>
+    <input id="fund-amount" type="number" min="0" step="any" placeholder="Amount of the token">
+    <button id="fund" class="mint">Fund pool 🍬</button>
+    <p class="muted">Funding sends your tokens straight into the contract's reward pool. The token must already be registered below (LNC is registered from the start).</p>
+
+    <h3>3 · Add a reward token</h3>
+    <label class="muted" for="add-token">Token contract address</label>
+    <input id="add-token" type="text" placeholder="terra1…">
+    <button id="add-reward" class="purple">Add reward token</button>
+    <p class="muted">New tokens start at rate 0 — set their rate and fund them afterwards.</p>
+  </div>
+
+  <p id="log"></p>
+  <p class="muted" style="text-align:center">🍭 LNC on Luna Classic · No seed phrase or private key is ever asked for — you approve every transaction in your own wallet.</p>
+</main>
+<script src="app.bundle.js" defer></script>
 </body>
 </html>
