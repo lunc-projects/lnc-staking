@@ -22,7 +22,7 @@ later — instantiation stays open to everybody regardless.
   (`terra17ntyhh0242y2tjmq37zjgl0chysu84s9hkph69`).
 - Before uploading, it downloads `lnc_staking.wasm` from the same directory, hashes it in
   the browser, and requires the hash to equal the expected sha256
-  (`9993d22a5fb506945f1658809fcce040a0e318d40c455c1423ca01e53117b4ec`). Upload stays
+  (`b913d65284efee63c4bf1a5f8badbb3d792d8a058f0d7d86f6357f7dd2f675c7`). Upload stays
   disabled on any mismatch.
 - After a successful upload it shows the tx hash (Finder link), the new `code_id`, the
   tx-returned checksum, and the on-chain `data_hash` fetched from the LCD — all three
