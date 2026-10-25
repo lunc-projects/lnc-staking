@@ -64,7 +64,10 @@ terrad tx wasm instantiate <code_id> '<that JSON>' \
 
 Record the contract address. Verify on-chain afterwards:
 `config` query shows the admin + stake token above, `rewards` shows LNC
-at rate 0, `total_staked` 0, not paused.
+at rate 0, `total_staked` 0, not paused, and (v0.2.0) `min_stake`
+3,000,000,000,000 raw units (3,000,000 whole LNC). The instantiate JSON
+may omit `min_stake` — it defaults to that value; pass it explicitly
+only to start with a different floor.
 
 ### 4. Set the rate and fund the pool (admin only, in this order)
 

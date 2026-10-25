@@ -127,7 +127,7 @@ who can submit chain-level admin actions — it does NOT change the code
 
 ```bash
 # Rust 1.85.1 toolchain (rustup) — from this directory:
-cargo test        # 16/16 unit tests
+cargo test        # 21/21 unit tests
 cargo build --release --target wasm32-unknown-unknown
 # deployable binary lands at:
 #   target/wasm32-unknown-unknown/release/lnc_staking.wasm
@@ -139,8 +139,10 @@ mid-stake rate changes, zero-rate behavior, pause gating (stake + claim
 blocked, unstake never blocked), admin-only gating, principal isolation,
 migrate rejection, rounding dust truncation, pool-dry capping, the
 two-step admin transfer, per-reward pause freezing the index, rejected
-unregistered funding / wrong-token staking, claim after full unstake, and
-the balance invariant `pool + banked + total_staked + paid == funded + staked`.
+unregistered funding / wrong-token staking, claim after full unstake,
+the balance invariant `pool + banked + total_staked + paid == funded + staked`,
+and (v0.2.0) the minimum-stake floor: default 3,000,000 LNC, below-minimum
+rejection, at-minimum acceptance, and admin-only SetMinStake.
 
 ## Layout
 
